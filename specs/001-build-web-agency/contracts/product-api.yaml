@@ -1,0 +1,315 @@
+openapi: 3.1.0
+info:
+  title: Devlecta Product API
+  version: 1.0.0
+  description: API endpoints for digital product management
+
+servers:
+  - url: http://localhost
+    description: Local development
+  - url: https://devlecta.com
+    description: Production
+
+paths:
+  /products:
+    get:
+      summary: List products with filtering and pagination
+      tags: [Products - Public]
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+          description: Filter by category slug
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 12
+      responses:
+        '200':
+          description: Product list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductListItem'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+
+  /products/{slug}:
+    get:
+      summary: Get product detail by slug
+      tags: [Products - Public]
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product detail retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ProductDetail'
+        '404':
+          description: Product not found
+
+  /admin/products:
+    get:
+      summary: List all products (admin view)
+      tags: [Products - Admin]
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Admin product list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductDetail'
+
+    post:
+      summary: Create new product
+      tags: [Products - Admin]
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
+      responses:
+        '201':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ProductDetail'
+                  message:
+                    type: string
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /admin/products/{id}:
+    put:
+      summary: Update product
+      tags: [Products - Admin]
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateProductRequest'
+      responses:
+        '200':
+          description: Product updated successfully
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+    delete:
+      summary: Delete product (soft delete)
+      tags: [Products - Admin]
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Product deleted successfully
+
+components:
+  schemas:
+    ProductListItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          nullable: true
+        rating:
+          type: number
+          nullable: true
+        reviews_count:
+          type: integer
+        category:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        thumbnail:
+          type: string
+          nullable: true
+        envato_url:
+          type: string
+
+    ProductDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          nullable: true
+        envato_url:
+          type: string
+        rating:
+          type: number
+          nullable: true
+        reviews_count:
+          type: integer
+        demo_link:
+          type: string
+          nullable: true
+        docs_link:
+          type: string
+          nullable: true
+        features:
+          type: array
+          items:
+            type: string
+        changelog:
+          type: array
+          items:
+            type: object
+        status:
+          type: string
+          enum: [draft, published, archived]
+        category:
+          type: object
+        media:
+          type: array
+          items:
+            type: object
+        related_products:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductListItem'
+
+    CreateProductRequest:
+      type: object
+      required:
+        - name
+        - description
+        - envato_url
+        - category_id
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          minLength: 50
+        envato_url:
+          type: string
+          format: uri
+        category_id:
+          type: integer
+        price:
+          type: number
+          nullable: true
+        demo_link:
+          type: string
+          format: uri
+          nullable: true
+        docs_link:
+          type: string
+          format: uri
+          nullable: true
+        features:
+          type: array
+          items:
+            type: string
+        screenshots:
+          type: array
+          items:
+            type: string
+            format: binary
+
+    UpdateProductRequest:
+      allOf:
+        - $ref: '#/components/schemas/CreateProductRequest'
+
+    PaginationMeta:
+      type: object
+      properties:
+        current_page:
+          type: integer
+        last_page:
+          type: integer
+        per_page:
+          type: integer
+        total:
+          type: integer
+
+  responses:
+    ValidationError:
+      description: Validation errors
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              errors:
+                type: object
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: laravel_session

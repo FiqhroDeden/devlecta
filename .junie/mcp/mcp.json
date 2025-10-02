@@ -1,0 +1,20 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "/Users/zoldy/Library/Application Support/Herd/bin/php83",
+            "args": [
+                "/Users/zoldy/Herd/devlecta/artisan",
+                "boost:mcp"
+            ]
+        },
+        "herd": {
+            "command": "/Users/zoldy/Library/Application Support/Herd/bin/php83",
+            "args": [
+                "/Applications/Herd.app/Contents/Resources/herd-mcp.phar"
+            ],
+            "env": {
+                "SITE_PATH": "/Users/zoldy/Herd/devlecta"
+            }
+        }
+    }
+}
