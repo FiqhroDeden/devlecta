@@ -16,10 +16,15 @@ class PortfolioController extends Controller
     /**
      * Display a listing of portfolios
      */
-    public function index(): Response
+    public function index()
     {
         $filters = request()->only(['category', 'technology', 'type', 'industry']);
         $portfolios = $this->portfolioService->getFilteredPortfolio($filters, 12);
+
+        // Return JSON for API requests
+        if (request()->wantsJson() || request()->is('api/*')) {
+            return PortfolioResource::collection($portfolios);
+        }
 
         return Inertia::render('Portfolio/Index', [
             'portfolios' => PortfolioResource::collection($portfolios),
@@ -30,7 +35,7 @@ class PortfolioController extends Controller
     /**
      * Display the specified portfolio
      */
-    public function show(string $slug): Response
+    public function show(string $slug)
     {
         $portfolio = $this->portfolioService->getPortfolioBySlug($slug);
 
@@ -39,6 +44,14 @@ class PortfolioController extends Controller
         }
 
         $relatedPortfolios = $this->portfolioService->getRelatedPortfolios($portfolio, 4);
+
+        // Return JSON for API requests
+        if (request()->wantsJson() || request()->is('api/*')) {
+            return response()->json([
+                'data' => new PortfolioResource($portfolio),
+                'related' => $relatedPortfolios,
+            ]);
+        }
 
         return Inertia::render('Portfolio/Show', [
             'portfolio' => new PortfolioResource($portfolio),

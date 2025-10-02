@@ -30,13 +30,21 @@ class ContactController extends Controller
     /**
      * Store a new contact submission
      */
-    public function store(ContactFormRequest $request): RedirectResponse
+    public function store(ContactFormRequest $request)
     {
         $lead = $this->leadService->createLead($request->validated());
 
         // Queue emails
         Mail::to($lead->email)->queue(new ContactFormSubmitted($lead));
         Mail::to(config('mail.admin_email', 'admin@devlecta.com'))->queue(new LeadNotification($lead));
+
+        // Return JSON for API requests
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return response()->json([
+                'message' => trans('app.contact.success_message'),
+                'lead_id' => $lead->id,
+            ], 201);
+        }
 
         return redirect()
             ->route('contact.create')
