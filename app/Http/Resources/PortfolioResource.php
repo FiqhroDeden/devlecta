@@ -35,16 +35,16 @@ class PortfolioResource extends JsonResource
                 'name' => $this->category?->name,
                 'slug' => $this->category?->slug,
             ],
-            'technologies' => $this->technologies->map(fn($tech) => [
+            'technologies' => $this->technologies->map(fn ($tech) => [
                 'id' => $tech->id,
                 'name' => $tech->name,
                 'slug' => $tech->slug,
                 'category' => $tech->category,
             ]),
-            'media' => $this->media->map(fn($media) => [
+            'media' => $this->media->map(fn ($media) => [
                 'id' => $media->id,
                 'type' => $media->type,
-                'path' => asset('storage/' . $media->path),
+                'path' => asset('storage/'.$media->path),
                 'display_order' => $media->display_order,
             ]),
         ];

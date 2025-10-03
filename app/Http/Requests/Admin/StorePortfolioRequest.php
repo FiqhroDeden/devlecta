@@ -67,7 +67,7 @@ class StorePortfolioRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Auto-generate slug from title if not provided
-        if (!$this->slug && $this->title) {
+        if (! $this->slug && $this->title) {
             $this->merge([
                 'slug' => \Str::slug($this->title),
             ]);

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ProductResource;
+use App\Models\Category;
 use App\Services\ProductService;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class ProductController extends Controller
 {
@@ -28,6 +28,7 @@ class ProductController extends Controller
 
         return Inertia::render('Products/Index', [
             'products' => ProductResource::collection($products),
+            'categories' => Category::query()->orderBy('name')->get(['id', 'name', 'slug']),
             'filters' => $filters,
         ]);
     }
@@ -39,7 +40,7 @@ class ProductController extends Controller
     {
         $product = $this->productService->getProductBySlug($slug);
 
-        if (!$product) {
+        if (! $product) {
             abort(404, 'Product not found');
         }
 

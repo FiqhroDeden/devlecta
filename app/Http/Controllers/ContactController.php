@@ -6,7 +6,6 @@ use App\Http\Requests\ContactFormRequest;
 use App\Mail\ContactFormSubmitted;
 use App\Mail\LeadNotification;
 use App\Services\LeadService;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;

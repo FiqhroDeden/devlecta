@@ -1,2 +1,14 @@
 User-agent: *
-Disallow:
+Allow: /
+
+Sitemap: https://devlecta.com/sitemap.xml
+
+# Disallow admin areas
+Disallow: /admin/
+Disallow: /api/
+
+# Allow specific files
+Allow: /storage/
+
+# Crawl-delay (optional)
+Crawl-delay: 1

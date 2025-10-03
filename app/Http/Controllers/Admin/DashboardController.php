@@ -18,7 +18,6 @@ class DashboardController extends Controller
     {
         $stats = [
             'total_portfolios' => Portfolio::count(),
-            'published_portfolios' => Portfolio::where('status', 'published')->count(),
             'total_products' => Product::count(),
             'total_leads' => Lead::count(),
             'new_leads' => Lead::where('status', 'new')->count(),
@@ -30,7 +29,7 @@ class DashboardController extends Controller
 
         return Inertia::render('Admin/Dashboard', [
             'stats' => $stats,
-            'recentLeads' => $recentLeads,
+            'recent_leads' => $recentLeads,
         ]);
     }
 }

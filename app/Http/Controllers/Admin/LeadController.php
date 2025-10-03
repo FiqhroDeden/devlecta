@@ -23,9 +23,9 @@ class LeadController extends Controller
     public function index(): Response
     {
         $leads = Lead::query()
-            ->when(request('status'), fn($q, $v) => $q->where('status', $v))
-            ->when(request('date_from'), fn($q, $v) => $q->whereDate('created_at', '>=', $v))
-            ->when(request('date_to'), fn($q, $v) => $q->whereDate('created_at', '<=', $v))
+            ->when(request('status'), fn ($q, $v) => $q->where('status', $v))
+            ->when(request('date_from'), fn ($q, $v) => $q->whereDate('created_at', '>=', $v))
+            ->when(request('date_to'), fn ($q, $v) => $q->whereDate('created_at', '<=', $v))
             ->orderBy('created_at', 'desc')
             ->paginate(25);
 

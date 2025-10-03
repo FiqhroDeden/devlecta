@@ -34,7 +34,7 @@ class LocaleMiddleware
 
         // 1. Check URL prefix (e.g., /en/ or /id/)
         $segments = $request->segments();
-        if (!empty($segments) && in_array($segments[0], $supportedLocales)) {
+        if (! empty($segments) && in_array($segments[0], $supportedLocales)) {
             return $segments[0];
         }
 

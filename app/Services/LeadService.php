@@ -36,7 +36,7 @@ class LeadService
      */
     public function exportToCsv(array $filters = []): StreamedResponse
     {
-        $fileName = 'leads_' . ($filters['status'] ?? 'all') . '_' . now()->format('Y-m-d') . '.csv';
+        $fileName = 'leads_'.($filters['status'] ?? 'all').'_'.now()->format('Y-m-d').'.csv';
 
         $leads = $this->getFilteredLeads($filters);
 
@@ -82,7 +82,7 @@ class LeadService
             fclose($handle);
         }, $fileName, [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+            'Content-Disposition' => 'attachment; filename="'.$fileName.'"',
         ]);
     }
 
@@ -92,9 +92,9 @@ class LeadService
     protected function getFilteredLeads(array $filters)
     {
         return Lead::query()
-            ->when($filters['status'] ?? null, fn($q, $v) => $q->where('status', $v))
-            ->when($filters['date_from'] ?? null, fn($q, $v) => $q->whereDate('created_at', '>=', $v))
-            ->when($filters['date_to'] ?? null, fn($q, $v) => $q->whereDate('created_at', '<=', $v))
+            ->when($filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
+            ->when($filters['date_from'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '>=', $v))
+            ->when($filters['date_to'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '<=', $v))
             ->orderBy('created_at', 'desc')
             ->get();
     }

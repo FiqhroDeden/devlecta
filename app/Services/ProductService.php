@@ -13,12 +13,12 @@ class ProductService
      */
     public function getFilteredProducts(array $filters, int $perPage = 12): LengthAwarePaginator
     {
-        $cacheKey = 'products:' . md5(json_encode($filters) . ':' . $perPage);
+        $cacheKey = 'products:'.md5(json_encode($filters).':'.$perPage);
 
         return Cache::tags(['products'])->remember(
             $cacheKey,
             300, // 5 minutes TTL
-            fn() => $this->buildProductQuery($filters)->paginate($perPage)
+            fn () => $this->buildProductQuery($filters)->paginate($perPage)
         );
     }
 
@@ -27,12 +27,12 @@ class ProductService
      */
     public function getProductBySlug(string $slug): ?Product
     {
-        $cacheKey = 'products:detail:' . $slug;
+        $cacheKey = 'products:detail:'.$slug;
 
         return Cache::tags(['products'])->remember(
             $cacheKey,
             300,
-            fn() => Product::with(['category', 'media'])
+            fn () => Product::with(['category', 'media'])
                 ->where('slug', $slug)
                 ->where('status', 'published')
                 ->first()
@@ -70,7 +70,7 @@ class ProductService
     {
         return Product::with(['category', 'media'])
             ->when($filters['category'] ?? null, function ($query, $categorySlug) {
-                $query->whereHas('category', fn($q) => $q->where('slug', $categorySlug));
+                $query->whereHas('category', fn ($q) => $q->where('slug', $categorySlug));
             })
             ->where('status', 'published')
             ->orderBy('rating', 'desc')

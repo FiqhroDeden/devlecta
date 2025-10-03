@@ -35,10 +35,10 @@ class ProductResource extends JsonResource
                 'name' => $this->category?->name,
                 'slug' => $this->category?->slug,
             ],
-            'media' => $this->media->map(fn($media) => [
+            'media' => $this->media->map(fn ($media) => [
                 'id' => $media->id,
                 'type' => $media->type,
-                'path' => asset('storage/' . $media->path),
+                'path' => asset('storage/'.$media->path),
                 'display_order' => $media->display_order,
             ]),
         ];

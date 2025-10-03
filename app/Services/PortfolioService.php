@@ -13,12 +13,12 @@ class PortfolioService
      */
     public function getFilteredPortfolio(array $filters, int $perPage = 12): LengthAwarePaginator
     {
-        $cacheKey = 'portfolio:' . md5(json_encode($filters) . ':' . $perPage);
+        $cacheKey = 'portfolio:'.md5(json_encode($filters).':'.$perPage);
 
         return Cache::tags(['portfolio'])->remember(
             $cacheKey,
             300, // 5 minutes TTL
-            fn() => $this->buildPortfolioQuery($filters)->paginate($perPage)
+            fn () => $this->buildPortfolioQuery($filters)->paginate($perPage)
         );
     }
 
@@ -27,12 +27,12 @@ class PortfolioService
      */
     public function getPortfolioBySlug(string $slug): ?Portfolio
     {
-        $cacheKey = 'portfolio:detail:' . $slug;
+        $cacheKey = 'portfolio:detail:'.$slug;
 
         return Cache::tags(['portfolio'])->remember(
             $cacheKey,
             300,
-            fn() => Portfolio::with(['category', 'technologies', 'media'])
+            fn () => Portfolio::with(['category', 'technologies', 'media'])
                 ->where('slug', $slug)
                 ->where('status', 'published')
                 ->first()
@@ -70,10 +70,10 @@ class PortfolioService
     {
         return Portfolio::with(['category', 'technologies', 'media'])
             ->when($filters['category'] ?? null, function ($query, $categorySlug) {
-                $query->whereHas('category', fn($q) => $q->where('slug', $categorySlug));
+                $query->whereHas('category', fn ($q) => $q->where('slug', $categorySlug));
             })
             ->when($filters['technology'] ?? null, function ($query, $technologySlug) {
-                $query->whereHas('technologies', fn($q) => $q->where('slug', $technologySlug));
+                $query->whereHas('technologies', fn ($q) => $q->where('slug', $technologySlug));
             })
             ->when($filters['type'] ?? null, function ($query, $type) {
                 $query->where('type', $type);

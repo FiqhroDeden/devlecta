@@ -68,7 +68,7 @@ class StoreProductRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Auto-generate slug from name if not provided
-        if (!$this->slug && $this->name) {
+        if (! $this->slug && $this->name) {
             $this->merge([
                 'slug' => \Str::slug($this->name),
             ]);

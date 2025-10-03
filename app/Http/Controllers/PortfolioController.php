@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PortfolioResource;
+use App\Models\Category;
+use App\Models\Technology;
 use App\Services\PortfolioService;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class PortfolioController extends Controller
 {
@@ -28,6 +29,8 @@ class PortfolioController extends Controller
 
         return Inertia::render('Portfolio/Index', [
             'portfolios' => PortfolioResource::collection($portfolios),
+            'categories' => Category::query()->orderBy('name')->get(['id', 'name', 'slug']),
+            'technologies' => Technology::query()->orderBy('name')->get(['id', 'name', 'slug']),
             'filters' => $filters,
         ]);
     }
@@ -39,7 +42,7 @@ class PortfolioController extends Controller
     {
         $portfolio = $this->portfolioService->getPortfolioBySlug($slug);
 
-        if (!$portfolio) {
+        if (! $portfolio) {
             abort(404, 'Portfolio not found');
         }
 

@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProductController;
+use App\Models\Portfolio;
+use App\Models\Testimonial;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -19,6 +21,7 @@ use Inertia\Inertia;
 // Root redirect to default locale
 Route::get('/', function () {
     $locale = session('locale', 'en');
+
     return redirect("/{$locale}");
 });
 
@@ -26,7 +29,19 @@ Route::get('/', function () {
 Route::prefix('{locale}')->where(['locale' => 'en|id'])->middleware(['locale'])->group(function () {
     // Homepage
     Route::get('/', function () {
-        return Inertia::render('Home');
+        return Inertia::render('Home', [
+            'featured_portfolio' => Portfolio::query()
+                ->where('featured', true)
+                ->with(['category', 'technologies', 'media'])
+                ->latest()
+                ->limit(3)
+                ->get(),
+            'testimonials' => Testimonial::query()
+                ->where('featured', true)
+                ->latest()
+                ->limit(3)
+                ->get(),
+        ]);
     })->name('home');
 
     // Portfolio routes
@@ -59,6 +74,11 @@ Route::prefix('{locale}')->where(['locale' => 'en|id'])->middleware(['locale'])-
 | Admin Routes
 |--------------------------------------------------------------------------
 */
+
+// Dashboard route alias
+Route::get('/dashboard', function () {
+    return redirect()->route('admin.dashboard');
+})->name('dashboard')->middleware(['auth', 'verified']);
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(function () {
     // Dashboard

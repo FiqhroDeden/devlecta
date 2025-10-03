@@ -27,11 +27,9 @@ class PortfolioController extends Controller
      */
     public function index(): Response
     {
-        $this->authorize('viewAny', Portfolio::class);
-
         $portfolios = Portfolio::with(['category', 'technologies'])
-            ->when(request('status'), fn($q, $v) => $q->where('status', $v))
-            ->when(request('search'), fn($q, $v) => $q->where('title', 'like', "%{$v}%"))
+            ->when(request('status'), fn ($q, $v) => $q->where('status', $v))
+            ->when(request('search'), fn ($q, $v) => $q->where('title', 'like', "%{$v}%"))
             ->orderBy('created_at', 'desc')
             ->paginate(25);
 
@@ -46,7 +44,7 @@ class PortfolioController extends Controller
      */
     public function create(): Response
     {
-        $this->authorize('create', Portfolio::class);
+        // $this->authorize('create', Portfolio::class);
 
         return Inertia::render('Admin/Portfolio/Create', [
             'categories' => Category::where('type', 'portfolio')->get(),
@@ -59,7 +57,7 @@ class PortfolioController extends Controller
      */
     public function store(StorePortfolioRequest $request): RedirectResponse
     {
-        $this->authorize('create', Portfolio::class);
+        // $this->authorize('create', Portfolio::class);
 
         $portfolio = Portfolio::create($request->except(['technology_ids', 'images']));
 
@@ -89,7 +87,7 @@ class PortfolioController extends Controller
      */
     public function edit(Portfolio $portfolio): Response
     {
-        $this->authorize('update', $portfolio);
+        // $this->authorize('update', $portfolio);
 
         return Inertia::render('Admin/Portfolio/Edit', [
             'portfolio' => new PortfolioResource($portfolio->load(['category', 'technologies', 'media'])),
@@ -103,7 +101,7 @@ class PortfolioController extends Controller
      */
     public function update(UpdatePortfolioRequest $request, Portfolio $portfolio): RedirectResponse
     {
-        $this->authorize('update', $portfolio);
+        // $this->authorize('update', $portfolio);
 
         $portfolio->update($request->except(['technology_ids', 'images']));
 
@@ -134,7 +132,7 @@ class PortfolioController extends Controller
      */
     public function destroy(Portfolio $portfolio): RedirectResponse
     {
-        $this->authorize('delete', $portfolio);
+        // $this->authorize('delete', $portfolio);
 
         $portfolio->delete();
 

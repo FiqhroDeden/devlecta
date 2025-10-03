@@ -20,4 +20,25 @@ export default defineConfig({
     esbuild: {
         jsx: 'automatic',
     },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    // Vendor chunk for common dependencies
+                    vendor: ['react', 'react-dom'],
+                    // Admin chunk for admin pages
+                    admin: [
+                        '/resources/js/Pages/Admin/Dashboard.tsx',
+                        '/resources/js/Pages/Admin/Portfolio/Index.tsx',
+                        '/resources/js/Pages/Admin/Portfolio/Create.tsx',
+                        '/resources/js/Pages/Admin/Portfolio/Edit.tsx',
+                        '/resources/js/Pages/Admin/Products/Index.tsx',
+                        '/resources/js/Pages/Admin/Products/Create.tsx',
+                        '/resources/js/Pages/Admin/Products/Edit.tsx',
+                        '/resources/js/Pages/Admin/Leads/Index.tsx',
+                    ],
+                },
+            },
+        },
+    },
 });

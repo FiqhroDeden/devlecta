@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Cache;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->service = new PortfolioService();
+    $this->service = new PortfolioService;
 });
 
 it('filters portfolios by category', function () {
@@ -55,6 +55,20 @@ it('caches filtered portfolio results', function () {
     $this->service->getFilteredPortfolio([]);
 
     Cache::shouldHaveReceived('tags')->with(['portfolio'])->once();
+});
+
+it('returns cached results on second call', function () {
+    Portfolio::factory()->count(3)->create(['status' => 'published']);
+
+    // First call - hits database
+    $result1 = $this->service->getFilteredPortfolio([]);
+
+    // Second call - should hit cache
+    $result2 = $this->service->getFilteredPortfolio([]);
+
+    expect($result1->items())->toHaveCount(3);
+    expect($result2->items())->toHaveCount(3);
+    expect($result1->first()->id)->toBe($result2->first()->id);
 });
 
 it('eager loads relationships to prevent N+1 queries', function () {

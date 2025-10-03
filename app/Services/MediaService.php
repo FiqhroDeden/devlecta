@@ -17,7 +17,7 @@ class MediaService
         $this->validateImage($file);
 
         $directory = "portfolio/{$portfolioId}";
-        $filename = Str::uuid() . '.webp';
+        $filename = Str::uuid().'.webp';
 
         // Generate multiple sizes
         $sizes = [
@@ -54,7 +54,7 @@ class MediaService
         $this->validateImage($file);
 
         $directory = "products/{$productId}";
-        $filename = Str::uuid() . '.webp';
+        $filename = Str::uuid().'.webp';
 
         $image = Image::read($file);
 
@@ -90,7 +90,7 @@ class MediaService
         $portfolioDirs = Storage::disk('public')->directories('portfolio');
         foreach ($portfolioDirs as $dir) {
             $id = (int) basename($dir);
-            if (!in_array($id, $portfolioIds)) {
+            if (! in_array($id, $portfolioIds)) {
                 Storage::disk('public')->deleteDirectory($dir);
                 $deletedCount++;
             }
@@ -100,7 +100,7 @@ class MediaService
         $productDirs = Storage::disk('public')->directories('products');
         foreach ($productDirs as $dir) {
             $id = (int) basename($dir);
-            if (!in_array($id, $productIds)) {
+            if (! in_array($id, $productIds)) {
                 Storage::disk('public')->deleteDirectory($dir);
                 $deletedCount++;
             }
@@ -117,7 +117,7 @@ class MediaService
         $allowedMimes = ['image/jpeg', 'image/png', 'image/webp'];
         $maxSize = 5 * 1024 * 1024; // 5MB
 
-        if (!in_array($file->getMimeType(), $allowedMimes)) {
+        if (! in_array($file->getMimeType(), $allowedMimes)) {
             throw new \InvalidArgumentException('Invalid file type. Only JPG, PNG, and WebP are allowed.');
         }
 

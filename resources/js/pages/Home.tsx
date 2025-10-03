@@ -284,7 +284,7 @@ export default function Home({ featured_portfolio, testimonials }: HomeProps) {
                     <p className="mx-auto mt-4 max-w-2xl text-lg text-blue-100">
                         {locale === 'id'
                             ? 'Hubungi kami hari ini dan mari diskusikan bagaimana kami dapat membantu mewujudkan visi digital Anda.'
-                            : 'Contact us today and let's discuss how we can help bring your digital vision to life.'}
+                            : "Contact us today and let's discuss how we can help bring your digital vision to life."}
                     </p>
                     <div className="mt-8">
                         <Link

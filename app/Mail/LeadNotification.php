@@ -26,7 +26,7 @@ class LeadNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'New Lead: ' . $this->lead->name . ' - ' . $this->lead->service_interest,
+            subject: 'New Lead: '.$this->lead->name.' - '.$this->lead->service_interest,
         );
     }
 
